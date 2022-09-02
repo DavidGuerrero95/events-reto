@@ -22,7 +22,7 @@ public class Photo {
     private Integer eventId;
     private String title;
     private String name; // file name
-    private Date createdtime; // upload time
+    private Date createdTime; // upload time
     private Binary content; // file content
     private String contentType; // file type
     private long size; // file size
