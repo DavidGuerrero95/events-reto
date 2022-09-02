@@ -20,7 +20,7 @@ public class Video {
     @JsonIgnore
     private String id;
 
-    private Integer eventId;
+    private String eventId;
     private String title;
     private String name; // file name
     private Date createdTime; // upload time
