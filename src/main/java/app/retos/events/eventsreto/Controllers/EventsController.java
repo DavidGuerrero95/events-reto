@@ -68,11 +68,12 @@ public class EventsController {
     @PostMapping("/crear/usuario/{username}")
     @ResponseStatus(code = HttpStatus.CREATED)
     public String crearEventoUser(@PathVariable("username") String username,
-                                  @RequestParam(value = "location", required = true) List<Double> location) {
+                                  @RequestParam(value = "location", required = true) List<Double> location,
+                                  @RequestParam("comentario") String comentario) {
         if (cbFactory.create("events").run(
                 () -> usersFeignClient.EmailUsernameUsuarioExiste(username),
                 this::errorExistsUsername)) {
-            if (eventsService.crearEventoUsuario(username, location)) return "Evento creado correctamente";
+            if (eventsService.crearEventoUsuario(username, location, comentario)) return "Evento creado correctamente";
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error en la creación del evento");
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El usuario: " + username + " no existe");
@@ -81,7 +82,7 @@ public class EventsController {
     @PutMapping("/crear/poste/{postId}")
     @ResponseStatus(code = HttpStatus.CREATED)
     public String crearEventoPoste(@PathVariable("postId") Integer postId,
-                                  @RequestParam(value = "location", required = true) List<Double> location,
+                                   @RequestParam(value = "location", required = true) List<Double> location,
                                    @RequestParam(value = "zoneCode", required = true) Integer zoneCode) {
         if (cbFactory.create("events").run(
                 () -> sensoresFeignClient.posteExiste(postId),
@@ -94,11 +95,36 @@ public class EventsController {
 
     @PostMapping("/anexar/usuarios/{username}")
     @ResponseStatus(code = HttpStatus.CREATED)
-    public String agregarArchivos(@PathVariable("username") String username,
+    public String agregarArchivosUsuario(@PathVariable("username") String username,
                                   @RequestParam("imagenes") List<MultipartFile> imagenes,
                                   @RequestParam("videos") List<MultipartFile> videos,
-                                  @RequestParam("audios") List<MultipartFile> audios){
+                                  @RequestParam("audios") List<MultipartFile> audios) {
+        String id = eventRepository.findByUserId(eventsService.obtenerIdUsuario(username)).getId();
 
+        if (imagenes != null)
+            eventsService.guardarImagenes(id, imagenes);
+        if (imagenes != null)
+            eventsService.guardarVideos(id, videos);
+        if (imagenes != null)
+            eventsService.guardarAudios(id, audios);
+        return "Archivos agregados correctamente";
+    }
+
+    @PostMapping("/anexar/poste/{postId}")
+    @ResponseStatus(code = HttpStatus.CREATED)
+    public String agregarArchivosPoste(@PathVariable("postId") Integer postId,
+                                  @RequestParam("imagenes") List<MultipartFile> imagenes,
+                                  @RequestParam("videos") List<MultipartFile> videos,
+                                  @RequestParam("audios") List<MultipartFile> audios) {
+        String id = eventRepository.findByPostId(postId).getId();
+
+        if (imagenes != null)
+            eventsService.guardarImagenes(id, imagenes);
+        if (imagenes != null)
+            eventsService.guardarVideos(id, videos);
+        if (imagenes != null)
+            eventsService.guardarAudios(id, audios);
+        return "Archivos agregados correctamente";
     }
 
 

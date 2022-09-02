@@ -19,7 +19,7 @@ public class Audio {
     @JsonIgnore
     private String id;
 
-    private Integer eventId;
+    private String eventId;
     private String title;
     private String name; // file name
     private Date createdtime; // upload time

@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface EventRepository extends MongoRepository<Events, String> {
 
+
     @RestResource(path = "find-userId")
     Events findByUserId(@Param("userId") String userId);
 
