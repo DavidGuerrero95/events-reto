@@ -42,26 +42,26 @@ public class EventsController {
 
     @GetMapping("/listar/usuario/{username}")
     @ResponseStatus(code = HttpStatus.OK)
-    public Events listarEventosUsuario(String username) {
+    public Events listarEventosUsuario(@PathVariable("username") String username) {
         String id = eventsService.obtenerIdUsuario(username);
         return eventRepository.findByUserId(id);
     }
 
     @GetMapping("/listar/poste/{postId}")
     @ResponseStatus(code = HttpStatus.OK)
-    public Events listarEventosPoste(Integer postId) {
+    public Events listarEventosPoste(@PathVariable("postId") Integer postId) {
         return eventRepository.findByPostId(postId);
     }
 
     @GetMapping("/listar/zona/{zoneCode}")
     @ResponseStatus(code = HttpStatus.OK)
-    public List<Events> listarEventosZona(Integer zoneCode) {
+    public List<Events> listarEventosZona(@PathVariable("zoneCode") Integer zoneCode) {
         return eventRepository.findByZoneCode(zoneCode);
     }
 
     @GetMapping("/listar/status/{status}")
     @ResponseStatus(code = HttpStatus.OK)
-    public List<Events> listarEventosStatus(Integer status) {
+    public List<Events> listarEventosStatus(@PathVariable("status") Integer status) {
         return eventRepository.findByStatus(status);
     }
 
