@@ -13,12 +13,12 @@ import java.util.List;
 @NoArgsConstructor
 public class UserEvent {
 
-    @NotEmpty(message = "ubicacion no puedde esta vacia")
+    @NotEmpty(message = "locatio no puede esta vacia")
     @Size(min=2,max = 2, message = "Debe tener dos valores (Lat, Lon)")
-    private List<Double> ubicacion;
+    private List<Double> location;
 
-    private String descripcionEvento;
+    private String eventDescription;
 
-    private String comentario;
+    private String comment;
 
 }
