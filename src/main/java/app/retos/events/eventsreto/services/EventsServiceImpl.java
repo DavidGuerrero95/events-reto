@@ -51,7 +51,7 @@ public class EventsServiceImpl implements IEventsService{
 
     @Override
     public Boolean crearEventoUsuario(String username, UserEvent userEvent) {
-        List<Double> location = userEvent.getUbicacion();
+        List<Double> location = userEvent.getLocation();
         String userId = obtenerIdUsuario(username);
         Events events = new Events();
         if(eventRepository.existsByUserId(userId))
@@ -67,10 +67,10 @@ public class EventsServiceImpl implements IEventsService{
         events.setZoneCode(cbFactory.create("events").run(
                 () -> zonasFeignClient.obtainZonesEvents(userId, location),
                 this::errorObtenerZona));
-        if(userEvent.getComentario() != null)
-            events.setComment(userEvent.getComentario());
-        if(userEvent.getDescripcionEvento() != null)
-            events.setEventDescription(userEvent.getDescripcionEvento());
+        if(userEvent.getComment() != null)
+            events.setComment(userEvent.getComment());
+        if(userEvent.getEventDescription() != null)
+            events.setEventDescription(userEvent.getEventDescription());
         events.setPhotos(new ArrayList<>());
         events.setVideos(new ArrayList<>());
         events.setAudios(new ArrayList<>());
