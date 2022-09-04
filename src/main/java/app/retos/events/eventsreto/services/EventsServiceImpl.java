@@ -9,6 +9,7 @@ import app.retos.events.eventsreto.repository.AudioRepository;
 import app.retos.events.eventsreto.repository.EventRepository;
 import app.retos.events.eventsreto.repository.PhotoRepository;
 import app.retos.events.eventsreto.repository.VideoRepository;
+import app.retos.events.eventsreto.requests.UserEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.Binary;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,8 @@ public class EventsServiceImpl implements IEventsService{
     AudioRepository audioRepository;
 
     @Override
-    public Boolean crearEventoUsuario(String username, List<Double> location, String comentario) {
+    public Boolean crearEventoUsuario(String username, UserEvent userEvent) {
+        List<Double> location = userEvent.getUbicacion();
         String userId = obtenerIdUsuario(username);
         Events events = new Events();
         if(eventRepository.existsByUserId(userId))
@@ -65,7 +67,10 @@ public class EventsServiceImpl implements IEventsService{
         events.setZoneCode(cbFactory.create("events").run(
                 () -> zonasFeignClient.obtainZonesEvents(userId, location),
                 this::errorObtenerZona));
-        events.setComment(comentario);
+        if(userEvent.getComentario() != null)
+            events.setComment(userEvent.getComentario());
+        if(userEvent.getDescripcionEvento() != null)
+            events.setEventDescription(userEvent.getDescripcionEvento());
         events.setPhotos(new ArrayList<>());
         events.setVideos(new ArrayList<>());
         events.setAudios(new ArrayList<>());

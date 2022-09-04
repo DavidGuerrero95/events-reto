@@ -1,12 +1,13 @@
 package app.retos.events.eventsreto.services;
 
+import app.retos.events.eventsreto.requests.UserEvent;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface IEventsService {
 
-    Boolean crearEventoUsuario(String username, List<Double> location, String comentario);
+    Boolean crearEventoUsuario(String username, UserEvent userEvent);
 
     String obtenerIdUsuario(String username);
 
