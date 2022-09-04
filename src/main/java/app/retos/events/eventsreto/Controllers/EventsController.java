@@ -4,11 +4,13 @@ import app.retos.events.eventsreto.clients.SensoresFeignClient;
 import app.retos.events.eventsreto.clients.UsersFeignClient;
 import app.retos.events.eventsreto.models.Events;
 import app.retos.events.eventsreto.repository.EventRepository;
+import app.retos.events.eventsreto.requests.UserEvent;
 import app.retos.events.eventsreto.services.IEventsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -68,12 +70,11 @@ public class EventsController {
     @PostMapping("/crear/usuario/{username}")
     @ResponseStatus(code = HttpStatus.CREATED)
     public String crearEventoUser(@PathVariable("username") String username,
-                                  @RequestParam(value = "location", required = true) List<Double> location,
-                                  @RequestParam("comentario") String comentario) {
+                                  @RequestBody @Validated UserEvent userEvent) {
         if (cbFactory.create("events").run(
                 () -> usersFeignClient.EmailUsernameUsuarioExiste(username),
                 this::errorExistsUsername)) {
-            if (eventsService.crearEventoUsuario(username, location, comentario)) return "Evento creado correctamente";
+            if (eventsService.crearEventoUsuario(username, userEvent)) return "Evento creado correctamente";
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error en la creación del evento");
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El usuario: " + username + " no existe");

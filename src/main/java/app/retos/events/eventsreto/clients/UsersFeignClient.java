@@ -10,7 +10,7 @@ public interface UsersFeignClient {
     @GetMapping("/usuarios/obtener/{username}")
     String obtenerId(@PathVariable("username") String username);
 
-    @GetMapping("/usuarios/existe/todos/{dato}")
+    @GetMapping("/usuarios/existe/{dato}")
     Boolean EmailUsernameUsuarioExiste(@PathVariable("dato") String dato);
 
 }

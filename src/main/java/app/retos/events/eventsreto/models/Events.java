@@ -25,6 +25,7 @@ public class Events {
     private Integer type;
     private String date;
     private String time;
+    private String eventDescription;
 
     @NotEmpty(message = "locacion no puedde esta vacia")
     @Size(min=2,max = 2, message = "Debe tener dos valores")
