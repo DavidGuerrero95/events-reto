@@ -44,34 +44,33 @@ public class FilesController {
     @Autowired
     VideoRepository videoRepository;
 
-    @GetMapping("/obtener/{id}")
+    @GetMapping("/obtener/{username}")
     @ResponseStatus(code = HttpStatus.OK)
-    public FileEventResponse obtenerFiles(@PathVariable("id") String id){
+    public FileEventResponse obtenerFiles(@PathVariable("id") String id) {
         return filesService.obtenerArchivos(id);
     }
 
     @GetMapping("/obtener/all/{id}")
     @ResponseStatus(code = HttpStatus.OK)
-    public List<Photo> obtenerAll(@PathVariable("id") String id){
+    public List<Photo> obtenerAll(@PathVariable("id") String id) {
         return photoRepository.findByEventId(id);
     }
 
     @PostMapping(path = "/anexar/usuarios/{username}")
     @ResponseStatus(code = HttpStatus.CREATED)
     public String agregarArchivosUsuario(@PathVariable("username") String username,
-                                         @RequestPart(value = "imagenes") List<MultipartFile> imagenes) throws Exception {
+                                         @RequestPart(value = "imagenes", required = false) List<MultipartFile> imagenes,
+                                         @RequestPart(value = "videos", required = false) List<MultipartFile> videos,
+                                         @RequestPart(value = "audios", required = false) List<MultipartFile> audios) throws Exception {
         if (eventsService.existeUsuario(username)) {
             String id = userEventRepository.findByUserId(eventsService.obtenerIdUsuario(username)).getId();
-            if (imagenes.size() != 0) {
-                filesService.guardarImagenes(id, imagenes);
-                return "Archivos agregados correctamente";
-            }
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error en anexar la foto del evento");
-            }
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El usuario: " + username + " no existe");
+            filesService.guardarImagenes(id, imagenes);
+            filesService.guardarVideos(id, videos);
+            filesService.guardarAudios(id, audios);
+            return "Archivos agregados correctamente";
         }
-
-
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El usuario: " + username + " no existe");
+    }
 
     @PostMapping("/anexar/poste/{postId}")
     @ResponseStatus(code = HttpStatus.CREATED)
