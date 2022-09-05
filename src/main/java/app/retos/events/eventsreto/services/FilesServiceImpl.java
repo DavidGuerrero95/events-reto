@@ -33,29 +33,23 @@ public class FilesServiceImpl implements IFilesService {
     AudioRepository audioRepository;
 
     @Override
-    public boolean guardarImagenes(String id, List<MultipartFile> imagenes) {
+    public boolean guardarImagenes(String id, MultipartFile imagenes) {
         try {
-            imagenes.forEach(i -> {
-                Photo photo = new Photo();
-                photo.setEventId(id);
-                try {
-                    photo.setName(i.getOriginalFilename());
-                    photo.setCreatedtime(new Date());
-                    photo.setContent(new Binary(i.getBytes()));
-                    photo.setContentType(i.getContentType());
-                    photo.setSize(i.getSize());
-                    String suffix = i.getOriginalFilename().substring(i.getOriginalFilename().lastIndexOf("."));
-                    photo.setSuffix(suffix);
-                    log.info("Guardo");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    log.error("ERROR: "+e.getMessage()+" OTRO:"+e.getLocalizedMessage());
-                }
-                photoRepository.save(photo);
-            });
+            Photo photo = new Photo();
+            photo.setEventId(id);
+
+            photo.setName(imagenes.getOriginalFilename());
+            photo.setCreatedtime(new Date());
+            photo.setContent(new Binary(imagenes.getBytes()));
+            photo.setContentType(imagenes.getContentType());
+            photo.setSize(imagenes.getSize());
+            String suffix = imagenes.getOriginalFilename().substring(imagenes.getOriginalFilename().lastIndexOf("."));
+            photo.setSuffix(suffix);
+            log.info("Guardo");
+            photoRepository.save(photo);
             return true;
         } catch (Exception e) {
-            log.error("ERROR 2: "+e.getMessage()+" OTRO:"+e.getLocalizedMessage());
+            log.error("ERROR 2: " + e.getMessage() + " OTRO:" + e.getLocalizedMessage());
             e.printStackTrace();
             return false;
         }
@@ -127,7 +121,7 @@ public class FilesServiceImpl implements IFilesService {
         photos.forEach(x -> {
             byte[] data = null;
             Photo photo = photoRepository.findImageById(x.getId(), Photo.class);
-            if(photo != null){
+            if (photo != null) {
                 data = photo.getContent().getData();
             }
             photosSend.add(Base64.getEncoder().encodeToString(data));

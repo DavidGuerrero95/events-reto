@@ -58,14 +58,13 @@ public class FilesController {
     @PostMapping("/anexar/usuarios/{username}")
     @ResponseStatus(code = HttpStatus.CREATED)
     public String agregarArchivosUsuario(@PathVariable("username") String username,
-                                         @RequestParam(value = "imagenes") List<MultipartFile> imagenes) throws InstantiationException, IllegalAccessException {
+                                         @RequestParam(value = "imagenes") MultipartFile imagenes) throws InstantiationException, IllegalAccessException {
         if (eventsService.existeUsuario(username)) {
             String id = userEventRepository.findByUserId(eventsService.obtenerIdUsuario(username)).getId();
-            if (!imagenes.isEmpty()) {
-                filesService.guardarImagenes(id, imagenes);
-                return "Archivos agregados correctamente";
-            }
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error en anexar la foto del evento");
+
+            filesService.guardarImagenes(id, imagenes);
+            return "Archivos agregados correctamente";
+
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El usuario: " + username + " no existe");
     }
@@ -74,7 +73,7 @@ public class FilesController {
     @PostMapping("/anexar/poste/{postId}")
     @ResponseStatus(code = HttpStatus.CREATED)
     public String agregarArchivosPoste(@PathVariable("postId") Integer postId,
-                                       @RequestParam("imagenes") List<MultipartFile> imagenes,
+                                       @RequestParam("imagenes") MultipartFile imagenes,
                                        @RequestParam("videos") List<MultipartFile> videos,
                                        @RequestParam("audios") List<MultipartFile> audios) {
         String id = postEventRepository.findByPostId(postId).getId();
