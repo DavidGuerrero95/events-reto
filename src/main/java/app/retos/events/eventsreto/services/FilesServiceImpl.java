@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
@@ -35,7 +36,7 @@ public class FilesServiceImpl implements IFilesService {
     @Override
     public boolean guardarImagenes(String id, List<MultipartFile> imagenes) {
         try {
-            for(MultipartFile i : imagenes){
+            for (MultipartFile i : imagenes) {
                 Photo photo = new Photo();
                 photo.setEventId(id);
                 try {
@@ -49,24 +50,20 @@ public class FilesServiceImpl implements IFilesService {
                     photo.setImage(Base64.getEncoder().encodeToString(photo.getContent().getData()));
                     log.info("Guardo");
                 } catch (IOException e) {
-                    e.printStackTrace();
-                    log.error("ERROR: "+e.getMessage()+" OTRO:"+e.getLocalizedMessage());
+                    log.error("ERROR: " + e.getMessage() + " OTRO:" + e.getLocalizedMessage());
                 }
                 photoRepository.save(photo);
             }
             return true;
         } catch (Exception e) {
-            log.error("ERROR 2: "+e.getMessage()+" OTRO:"+e.getLocalizedMessage());
-            e.printStackTrace();
+            log.error("ERROR 2: " + e.getMessage() + " OTRO:" + e.getLocalizedMessage());
             return false;
         }
     }
 
     @Override
     public boolean guardarVideos(String id, List<MultipartFile> videos) {
-        final boolean[] flag = {true};
         try {
-
             videos.forEach(i -> {
                 Video video = new Video();
                 video.setEventId(id);
@@ -81,20 +78,18 @@ public class FilesServiceImpl implements IFilesService {
                     video.setStream(i.getInputStream());
                     videoRepository.save(video);
                 } catch (IOException e) {
-                    flag[0] = false;
-                    throw new RuntimeException(e);
+                    log.error("ERROR: " + e.getMessage() + " OTRO:" + e.getLocalizedMessage());
                 }
             });
-            return flag[0];
+            return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("ERROR 2: " + e.getMessage() + " OTRO:" + e.getLocalizedMessage());
             return false;
         }
     }
 
     @Override
     public boolean guardarAudios(String id, List<MultipartFile> audios) {
-        final boolean[] flag = {true};
         try {
             audios.forEach(i -> {
                 Audio audio = new Audio();
@@ -109,15 +104,13 @@ public class FilesServiceImpl implements IFilesService {
                     audio.setSuffix(suffix);
                     audio.setImage(Base64.getEncoder().encodeToString(audio.getContent().getData()));
                     audioRepository.save(audio);
-                    flag[0] = true;
                 } catch (IOException e) {
-                    flag[0] = false;
-                    throw new RuntimeException(e);
+                    log.error("ERROR: " + e.getMessage() + " OTRO:" + e.getLocalizedMessage());
                 }
             });
-            return flag[0];
+            return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("ERROR 2: " + e.getMessage() + " OTRO:" + e.getLocalizedMessage());
             return false;
         }
     }
@@ -125,12 +118,21 @@ public class FilesServiceImpl implements IFilesService {
     @Override
     public FileEventResponse obtenerArchivos(String id) {
         List<Photo> photos = photoRepository.findByEventId(id);
+        List<Video> videos = videoRepository.findByEventId(id);
+        List<Audio> audio = audioRepository.findByEventId(id);
         List<String> photosSend = new ArrayList<>();
+        List<InputStream> videosSend = new ArrayList<>();
+        List<String> audiosSend = new ArrayList<>();
         photos.forEach(x -> {
             photosSend.add(x.getImage());
         });
+        videos.forEach(x -> {
+            videosSend.add(x.getStream());
+        });
+        audio.forEach(x -> {
+            audiosSend.add(x.getImage());
+        });
 
-        return new FileEventResponse(photosSend, new ArrayList<>(), new ArrayList<>());
+        return new FileEventResponse(photosSend, videosSend, audiosSend);
     }
-
 }
