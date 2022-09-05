@@ -7,6 +7,7 @@ import app.retos.events.eventsreto.repository.AudioRepository;
 import app.retos.events.eventsreto.repository.PhotoRepository;
 import app.retos.events.eventsreto.repository.VideoRepository;
 import app.retos.events.eventsreto.response.FileEventResponse;
+import com.mongodb.MongoException;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.Binary;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,23 +69,19 @@ public class FilesServiceImpl implements IFilesService {
                 Video video = new Video();
                 video.setEventId(id);
                 try {
-                    log.info("Entro");
                     video.setName(i.getOriginalFilename());
-                    log.info("name");
                     video.setCreatedTime(new Date());
-                    log.info("createdTime");
                     video.setSize(i.getSize());
-                    log.info("size");
                     video.setContent(new Binary(i.getBytes()));
-                    log.info("content");
                     video.setContentType(i.getContentType());
-                    log.info("contentType");
                     String suffix = i.getOriginalFilename().substring(i.getOriginalFilename().lastIndexOf("."));
                     video.setSuffix(suffix);
-                    log.info("sufijo");
                     video.setStream(i.getInputStream());
-                    log.info("stream");
-                    videoRepository.save(video);
+                    try {
+                        videoRepository.save(video);
+                    }catch (MongoException mongoException){
+                        log.info("Error: "+mongoException.getMessage()+"Error 2: "+mongoException.getLocalizedMessage());
+                    }
                     log.info("Guardo video");
                 } catch (IOException e) {
                     log.error("ERROR: " + e.getMessage() + " OTRO:" + e.getLocalizedMessage());
