@@ -62,11 +62,11 @@ public class FilesController {
                                          @RequestParam("audios") List<MultipartFile> audios) {
         String id = userEventRepository.findByUserId(eventsService.obtenerIdUsuario(username)).getId();
 
-        if (imagenes != null)
+        if (!imagenes.isEmpty())
             filesService.guardarImagenes(id, imagenes);
-        if (videos != null)
+        if (!videos.isEmpty())
             filesService.guardarVideos(id, videos);
-        if (audios != null)
+        if (!audios.isEmpty())
             filesService.guardarAudios(id, audios);
         return "Archivos agregados correctamente";
     }
