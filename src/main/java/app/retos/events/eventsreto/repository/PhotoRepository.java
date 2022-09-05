@@ -10,7 +10,7 @@ import java.util.List;
 public interface PhotoRepository extends MongoRepository<Photo, String> {
 
     @RestResource(path = "buscar Imagen id")
-    Photo findByEventId(@Param("eventId") String eventId);
+    List<Photo> findByEventId(@Param("eventId") String eventId);
 
     Photo findImageById(String id, Class<Photo> class1);
 
