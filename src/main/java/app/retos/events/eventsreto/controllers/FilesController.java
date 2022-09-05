@@ -64,9 +64,9 @@ public class FilesController {
 
         if (imagenes != null)
             filesService.guardarImagenes(id, imagenes);
-        if (imagenes != null)
+        if (videos != null)
             filesService.guardarVideos(id, videos);
-        if (imagenes != null)
+        if (audios != null)
             filesService.guardarAudios(id, audios);
         return "Archivos agregados correctamente";
     }
