@@ -74,6 +74,7 @@ public class EventsController {
         if (cbFactory.create("events").run(
                 () -> usersFeignClient.EmailUsernameUsuarioExiste(username),
                 this::errorExistsUsername)) {
+            log.info("Conexion establecida");
             if (eventsService.crearEventoUsuario(username, userEvent)) return "Evento creado correctamente";
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error en la creación del evento");
         }
