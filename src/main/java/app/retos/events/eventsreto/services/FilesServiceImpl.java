@@ -35,7 +35,7 @@ public class FilesServiceImpl implements IFilesService {
     @Override
     public boolean guardarImagenes(String id, List<MultipartFile> imagenes) {
         try {
-            imagenes.forEach(i -> {
+            for(MultipartFile i : imagenes){
                 Photo photo = new Photo();
                 photo.setEventId(id);
                 try {
@@ -52,7 +52,7 @@ public class FilesServiceImpl implements IFilesService {
                     log.error("ERROR: "+e.getMessage()+" OTRO:"+e.getLocalizedMessage());
                 }
                 photoRepository.save(photo);
-            });
+            }
             return true;
         } catch (Exception e) {
             log.error("ERROR 2: "+e.getMessage()+" OTRO:"+e.getLocalizedMessage());
@@ -65,6 +65,7 @@ public class FilesServiceImpl implements IFilesService {
     public boolean guardarVideos(String id, List<MultipartFile> videos) {
         final boolean[] flag = {true};
         try {
+
             videos.forEach(i -> {
                 Video video = new Video();
                 video.setEventId(id);

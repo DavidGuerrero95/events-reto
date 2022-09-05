@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -55,10 +56,10 @@ public class FilesController {
         return photoRepository.findByEventId(id);
     }
 
-    @PostMapping("/anexar/usuarios/{username}")
+    @PostMapping(path = "/anexar/usuarios/{username}")
     @ResponseStatus(code = HttpStatus.CREATED)
     public String agregarArchivosUsuario(@PathVariable("username") String username,
-                                         @RequestParam(value = "imagenes") List<MultipartFile> imagenes) throws InstantiationException, IllegalAccessException {
+                                         @RequestPart(value = "imagenes") List<MultipartFile> imagenes) throws Exception {
         if (eventsService.existeUsuario(username)) {
             String id = userEventRepository.findByUserId(eventsService.obtenerIdUsuario(username)).getId();
             if (!imagenes.isEmpty()) {
@@ -77,7 +78,7 @@ public class FilesController {
     public String agregarArchivosPoste(@PathVariable("postId") Integer postId,
                                        @RequestParam("imagenes") List<MultipartFile> imagenes,
                                        @RequestParam("videos") List<MultipartFile> videos,
-                                       @RequestParam("audios") List<MultipartFile> audios) {
+                                       @RequestParam("audios") List<MultipartFile> audios, MultipartRequest request) {
         String id = postEventRepository.findByPostId(postId).getId();
 
         if (imagenes != null)
