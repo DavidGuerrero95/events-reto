@@ -95,11 +95,9 @@ public class EventsServiceImpl implements IEventsService{
 
     @Override
     public Boolean existeUsuario(String username) throws InstantiationException, IllegalAccessException {
-        Object o = cbFactory.create("events").run(
-                () -> usersFeignClient.preguntarUsuarioExiste(username),
-                this::errorObtenerUsername);
-        log.info(String.valueOf(o.getClass()));
-        return (Boolean) o;
+       return cbFactory.create("events").run(
+               () -> usersFeignClient.preguntarUsuarioExiste(username),
+               this::errorExisteUsername);
     }
 
     @Override
@@ -242,6 +240,11 @@ public class EventsServiceImpl implements IEventsService{
     private Integer errorObtenerZona(Throwable e) {
         log.info("Error obtener zona: " + e.getMessage());
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Servicio zona no esta disponible");
+    }
+
+    private <T> T errorExisteUsername(Throwable e) {
+        log.info("Error existe user: " + e.getMessage());
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Servicio usuarios no esta disponible");
     }
 
 }
