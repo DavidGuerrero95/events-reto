@@ -68,14 +68,22 @@ public class FilesServiceImpl implements IFilesService {
                 Video video = new Video();
                 video.setEventId(id);
                 try {
+                    log.info("Entro");
                     video.setName(i.getOriginalFilename());
+                    log.info("name");
                     video.setCreatedTime(new Date());
+                    log.info("createdTime");
                     video.setSize(i.getSize());
+                    log.info("size");
                     video.setContent(new Binary(i.getBytes()));
+                    log.info("content");
                     video.setContentType(i.getContentType());
+                    log.info("contentType");
                     String suffix = i.getOriginalFilename().substring(i.getOriginalFilename().lastIndexOf("."));
                     video.setSuffix(suffix);
+                    log.info("sufijo");
                     video.setStream(i.getInputStream());
+                    log.info("stream");
                     videoRepository.save(video);
                     log.info("Guardo video");
                 } catch (IOException e) {
