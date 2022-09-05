@@ -11,7 +11,7 @@ public interface IEventsService {
 
     String obtenerIdUsuario(String username);
 
-    Boolean existeUsuario(String username);
+    Boolean existeUsuario(String username) throws InstantiationException, IllegalAccessException;
 
     boolean crearEventoPoste(Integer postId, List<Double> location, Integer zoneCode);
 

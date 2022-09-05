@@ -94,11 +94,12 @@ public class EventsServiceImpl implements IEventsService{
     }
 
     @Override
-    public Boolean existeUsuario(String username) {
-        Boolean retorno = (Boolean) cbFactory.create("events").run(
-                () -> usersFeignClient.EmailUsernameUsuarioExiste(username),
+    public Boolean existeUsuario(String username) throws InstantiationException, IllegalAccessException {
+        Object o = cbFactory.create("events").run(
+                () -> usersFeignClient.preguntarUsuarioExiste(username),
                 this::errorObtenerUsername);
-        return retorno;
+        log.info(String.valueOf(o.getClass()));
+        return (Boolean) o;
     }
 
     @Override

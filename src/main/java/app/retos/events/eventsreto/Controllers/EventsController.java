@@ -70,7 +70,7 @@ public class EventsController {
     @PostMapping("/crear/usuario/{username}")
     @ResponseStatus(code = HttpStatus.CREATED)
     public String crearEventoUser(@PathVariable("username") String username,
-                                  @RequestBody @Validated UserEvent userEvent) {
+                                  @RequestBody @Validated UserEvent userEvent) throws InstantiationException, IllegalAccessException {
         if (eventsService.existeUsuario(username)){
             if (eventsService.crearEventoUsuario(username, userEvent)) return "Evento creado correctamente";
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error en la creación del evento");
