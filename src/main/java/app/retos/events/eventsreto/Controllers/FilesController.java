@@ -3,10 +3,7 @@ package app.retos.events.eventsreto.Controllers;
 import app.retos.events.eventsreto.models.Audio;
 import app.retos.events.eventsreto.models.Photo;
 import app.retos.events.eventsreto.models.Video;
-import app.retos.events.eventsreto.repository.AudioRepository;
-import app.retos.events.eventsreto.repository.EventRepository;
-import app.retos.events.eventsreto.repository.PhotoRepository;
-import app.retos.events.eventsreto.repository.VideoRepository;
+import app.retos.events.eventsreto.repository.*;
 import app.retos.events.eventsreto.response.FileEventResponse;
 import app.retos.events.eventsreto.services.IEventsService;
 import app.retos.events.eventsreto.services.IFilesService;
@@ -25,6 +22,12 @@ public class FilesController {
 
     @Autowired
     EventRepository eventRepository;
+
+    @Autowired
+    UserEventRepository userEventRepository;
+
+    @Autowired
+    PostEventRepository postEventRepository;
 
     @Autowired
     IEventsService eventsService;
@@ -57,7 +60,7 @@ public class FilesController {
                                          @RequestParam("imagenes") List<MultipartFile> imagenes,
                                          @RequestParam("videos") List<MultipartFile> videos,
                                          @RequestParam("audios") List<MultipartFile> audios) {
-        String id = eventRepository.findByUserId(eventsService.obtenerIdUsuario(username)).getId();
+        String id = userEventRepository.findByUserId(eventsService.obtenerIdUsuario(username)).getId();
 
         if (imagenes != null)
             filesService.guardarImagenes(id, imagenes);
@@ -74,7 +77,7 @@ public class FilesController {
                                        @RequestParam("imagenes") List<MultipartFile> imagenes,
                                        @RequestParam("videos") List<MultipartFile> videos,
                                        @RequestParam("audios") List<MultipartFile> audios) {
-        String id = eventRepository.findByPostId(postId).getId();
+        String id = postEventRepository.findByPostId(postId).getId();
 
         if (imagenes != null)
             filesService.guardarImagenes(id, imagenes);
