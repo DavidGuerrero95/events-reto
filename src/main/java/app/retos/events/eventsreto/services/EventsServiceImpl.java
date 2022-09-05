@@ -13,7 +13,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -41,7 +45,9 @@ public class EventsServiceImpl implements IEventsService {
 
     @Override
     public Boolean crearEventoUsuario(String username, UserEventRequest userEvent) {
-        List<Double> location = userEvent.getLocation();
+        List<Double> location = new ArrayList<>(Arrays.asList(
+                BigDecimal.valueOf(userEvent.getLocation().get(0)).setScale(5, RoundingMode.HALF_UP).doubleValue(),
+                BigDecimal.valueOf(userEvent.getLocation().get(1)).setScale(5, RoundingMode.HALF_UP).doubleValue()));
         String userId = obtenerIdUsuario(username);
         UserEvent events = new UserEvent();
         if (userEventRepository.existsByUserId(userId))
