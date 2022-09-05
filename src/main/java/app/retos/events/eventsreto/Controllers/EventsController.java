@@ -3,6 +3,8 @@ package app.retos.events.eventsreto.Controllers;
 import app.retos.events.eventsreto.clients.SensoresFeignClient;
 import app.retos.events.eventsreto.models.Events;
 import app.retos.events.eventsreto.repository.EventRepository;
+import app.retos.events.eventsreto.repository.PostEventRepository;
+import app.retos.events.eventsreto.repository.UserEventRepository;
 import app.retos.events.eventsreto.requests.UserEventRequest;
 import app.retos.events.eventsreto.services.IEventsService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,12 @@ public class EventsController {
 
     @Autowired
     EventRepository eventRepository;
+
+    @Autowired
+    UserEventRepository userEventRepository;
+
+    @Autowired
+    PostEventRepository postEventRepository;
     @Autowired
     IEventsService eventsService;
     @Autowired
@@ -40,13 +48,13 @@ public class EventsController {
     @ResponseStatus(code = HttpStatus.OK)
     public Events listarEventosUsuario(@PathVariable("username") String username) {
         String id = eventsService.obtenerIdUsuario(username);
-        return eventRepository.findByUserId(id);
+        return userEventRepository.findByUserId(id);
     }
 
     @GetMapping("/listar/poste/{postId}")
     @ResponseStatus(code = HttpStatus.OK)
     public Events listarEventosPoste(@PathVariable("postId") Integer postId) {
-        return eventRepository.findByPostId(postId);
+        return postEventRepository.findByPostId(postId);
     }
 
     @GetMapping("/listar/zona/{zoneCode}")
@@ -91,7 +99,7 @@ public class EventsController {
     @ResponseStatus(HttpStatus.OK)
     public void eliminarEventoUsuario(@PathVariable("username") String username) {
         eventsService.deleteAll();
-        String id = eventRepository.findByUserId(eventsService.obtenerIdUsuario(username)).getId();
+        String id = userEventRepository.findByUserId(eventsService.obtenerIdUsuario(username)).getId();
         eventsService.deleteUser(id);
     }
 
