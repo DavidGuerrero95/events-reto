@@ -21,7 +21,6 @@ public class Video {
     private String id;
 
     private String eventId;
-    private String title;
     private String name; // file name
     private Date createdTime; // upload time
     private Binary content; // file content

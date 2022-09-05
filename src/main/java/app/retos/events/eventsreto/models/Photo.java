@@ -19,6 +19,7 @@ public class Photo {
     private String id;
 
     private String eventId;
+
     private String name; // file name
     private Date createdTime; // upload time
     private Binary content; // file content
