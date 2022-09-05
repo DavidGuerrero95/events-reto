@@ -47,11 +47,7 @@ public class FilesController {
     @GetMapping("/obtener/{id}")
     @ResponseStatus(code = HttpStatus.OK)
     public FileEventResponse obtenerFiles(@PathVariable("id") String id){
-        List<Photo> photos = photoRepository.findImageById(id, Photo.class);
-        List<Video> videos = videoRepository.findByEventId(id, Video.class);
-        List<Audio> audios = audioRepository.findByEventId(id, Audio.class);
-        FileEventResponse fileEventResponse = new FileEventResponse(photos, videos, audios);
-        return fileEventResponse;
+        return filesService.obtenerArchivos(id);
     }
 
     @PostMapping("/anexar/usuarios/{username}")
