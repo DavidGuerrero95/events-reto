@@ -1,13 +1,12 @@
 package app.retos.events.eventsreto.services;
 
-import app.retos.events.eventsreto.requests.UserEvent;
-import org.springframework.web.multipart.MultipartFile;
+import app.retos.events.eventsreto.requests.UserEventRequest;
 
 import java.util.List;
 
 public interface IEventsService {
 
-    Boolean crearEventoUsuario(String username, UserEvent userEvent);
+    Boolean crearEventoUsuario(String username, UserEventRequest userEvent);
 
     String obtenerIdUsuario(String username);
 
@@ -15,9 +14,7 @@ public interface IEventsService {
 
     boolean crearEventoPoste(Integer postId, List<Double> location, Integer zoneCode);
 
-    boolean guardarImagenes(String id, List<MultipartFile> imagenes);
+    void deleteAll();
 
-    boolean guardarVideos(String id, List<MultipartFile> videos);
-
-    boolean guardarAudios(String id, List<MultipartFile> audios);
+    void deleteUser(String id);
 }
