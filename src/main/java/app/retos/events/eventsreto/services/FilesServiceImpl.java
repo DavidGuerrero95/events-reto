@@ -48,7 +48,7 @@ public class FilesServiceImpl implements IFilesService {
                     String suffix = i.getOriginalFilename().substring(i.getOriginalFilename().lastIndexOf("."));
                     photo.setSuffix(suffix);
                     photo.setImage(Base64.getEncoder().encodeToString(photo.getContent().getData()));
-                    log.info("Guardo");
+                    log.info("Guardo foto");
                 } catch (IOException e) {
                     log.error("ERROR: " + e.getMessage() + " OTRO:" + e.getLocalizedMessage());
                 }
@@ -77,6 +77,7 @@ public class FilesServiceImpl implements IFilesService {
                     video.setSuffix(suffix);
                     video.setStream(i.getInputStream());
                     videoRepository.save(video);
+                    log.info("Guardo video");
                 } catch (IOException e) {
                     log.error("ERROR: " + e.getMessage() + " OTRO:" + e.getLocalizedMessage());
                 }
@@ -104,6 +105,7 @@ public class FilesServiceImpl implements IFilesService {
                     audio.setSuffix(suffix);
                     audio.setImage(Base64.getEncoder().encodeToString(audio.getContent().getData()));
                     audioRepository.save(audio);
+                    log.info("Guardo audio");
                 } catch (IOException e) {
                     log.error("ERROR: " + e.getMessage() + " OTRO:" + e.getLocalizedMessage());
                 }
