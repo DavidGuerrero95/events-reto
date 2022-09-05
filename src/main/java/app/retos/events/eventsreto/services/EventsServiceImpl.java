@@ -103,9 +103,7 @@ public class EventsServiceImpl implements IEventsService{
         try {
             ExistUser a = existUser.newInstance();
             return a.getExists();
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
 
