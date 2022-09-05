@@ -51,7 +51,7 @@ public class FilesController {
 
     @GetMapping("/obtener/all/{id}")
     @ResponseStatus(code = HttpStatus.OK)
-    public List<Photo> obtenerAll(@PathVariable("id") String id) {
+    public Photo obtenerAll(@PathVariable("id") String id) {
         return photoRepository.findByEventId(id);
     }
 
