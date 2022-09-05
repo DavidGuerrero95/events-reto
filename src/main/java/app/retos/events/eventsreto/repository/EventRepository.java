@@ -22,10 +22,4 @@ public interface EventRepository extends MongoRepository<Events, String> {
     @RestResource(path = "find-status")
     List<Events> findByStatus(@Param("status") Integer status);
 
-    @RestResource(path = "exists-userId")
-    Boolean existsByUserId(@Param("userId") String userId);
-
-    @RestResource(path = "exists-postId")
-    Boolean existsByPostId(@Param("userId") Integer postId);
-
 }
