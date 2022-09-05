@@ -34,29 +34,28 @@ public class FilesServiceImpl implements IFilesService {
 
     @Override
     public boolean guardarImagenes(String id, List<MultipartFile> imagenes) {
-        final boolean[] flag = {true};
         try {
             imagenes.forEach(i -> {
                 Photo photo = new Photo();
                 photo.setEventId(id);
                 try {
                     photo.setName(i.getOriginalFilename());
-                    photo.setCreatedTime(new Date());
+                    photo.setCreatedtime(new Date());
                     photo.setContent(new Binary(i.getBytes()));
                     photo.setContentType(i.getContentType());
                     photo.setSize(i.getSize());
                     String suffix = i.getOriginalFilename().substring(i.getOriginalFilename().lastIndexOf("."));
                     photo.setSuffix(suffix);
-                    photoRepository.save(photo);
-                    flag[0] = true;
                     log.info("Guardo");
                 } catch (IOException e) {
-                    flag[0] = false;
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
+                    log.error("ERROR: "+e.getMessage()+" OTRO:"+e.getLocalizedMessage());
                 }
+                photoRepository.save(photo);
             });
-            return flag[0];
+            return true;
         } catch (Exception e) {
+            log.error("ERROR 2: "+e.getMessage()+" OTRO:"+e.getLocalizedMessage());
             e.printStackTrace();
             return false;
         }
