@@ -13,7 +13,7 @@ import java.util.List;
 public class FileEventResponse {
 
     private List<String> photos;
-    private List<InputStream> videos;
+    private List<String> videos;
     private List<String> audios;
 
 }

@@ -76,7 +76,7 @@ public class FilesServiceImpl implements IFilesService {
                     video.setContentType(i.getContentType());
                     String suffix = i.getOriginalFilename().substring(i.getOriginalFilename().lastIndexOf("."));
                     video.setSuffix(suffix);
-                    video.setStream(i.getInputStream());
+                    video.setStream(Base64.getEncoder().encodeToString(video.getContent().getData()));
                     try {
                         videoRepository.save(video);
                     }catch (MongoException mongoException){
@@ -128,7 +128,7 @@ public class FilesServiceImpl implements IFilesService {
         List<Video> videos = videoRepository.findByEventId(id);
         List<Audio> audio = audioRepository.findByEventId(id);
         List<String> photosSend = new ArrayList<>();
-        List<InputStream> videosSend = new ArrayList<>();
+        List<String> videosSend = new ArrayList<>();
         List<String> audiosSend = new ArrayList<>();
         photos.forEach(x -> {
             photosSend.add(x.getImage());
