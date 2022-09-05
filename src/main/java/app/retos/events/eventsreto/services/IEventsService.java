@@ -11,6 +11,8 @@ public interface IEventsService {
 
     String obtenerIdUsuario(String username);
 
+    Boolean existeUsuario(String username);
+
     boolean crearEventoPoste(Integer postId, List<Double> location, Integer zoneCode);
 
     boolean guardarImagenes(String id, List<MultipartFile> imagenes);
