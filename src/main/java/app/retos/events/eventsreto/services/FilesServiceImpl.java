@@ -50,6 +50,7 @@ public class FilesServiceImpl implements IFilesService {
                     photo.setImage(Base64.getEncoder().encodeToString(photo.getContent().getData()));
                     photoRepository.save(photo);
                     flag[0] = true;
+                    log.info("Guardo");
                 } catch (IOException e) {
                     flag[0] = false;
                     throw new RuntimeException(e);

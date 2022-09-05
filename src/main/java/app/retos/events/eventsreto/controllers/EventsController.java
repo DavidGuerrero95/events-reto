@@ -1,4 +1,4 @@
-package app.retos.events.eventsreto.Controllers;
+package app.retos.events.eventsreto.controllers;
 
 import app.retos.events.eventsreto.clients.SensoresFeignClient;
 import app.retos.events.eventsreto.models.Events;

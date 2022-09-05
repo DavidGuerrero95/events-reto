@@ -1,8 +1,6 @@
-package app.retos.events.eventsreto.Controllers;
+package app.retos.events.eventsreto.controllers;
 
-import app.retos.events.eventsreto.models.Audio;
 import app.retos.events.eventsreto.models.Photo;
-import app.retos.events.eventsreto.models.Video;
 import app.retos.events.eventsreto.repository.*;
 import app.retos.events.eventsreto.response.FileEventResponse;
 import app.retos.events.eventsreto.services.IEventsService;
@@ -48,6 +46,12 @@ public class FilesController {
     @ResponseStatus(code = HttpStatus.OK)
     public FileEventResponse obtenerFiles(@PathVariable("id") String id){
         return filesService.obtenerArchivos(id);
+    }
+
+    @GetMapping("/obtener/all/{id}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<Photo> obtenerAll(@PathVariable("id") String id){
+        return photoRepository.findByEventId(id);
     }
 
     @PostMapping("/anexar/usuarios/{username}")
