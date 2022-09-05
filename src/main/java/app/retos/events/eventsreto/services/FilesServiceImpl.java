@@ -116,17 +116,14 @@ public class FilesServiceImpl implements IFilesService {
 
     @Override
     public FileEventResponse obtenerArchivos(String id) {
-        List<Photo> photos = photoRepository.findByEventId(id);
+        Photo photos = photoRepository.findByEventId(id);
         List<String> photosSend = new ArrayList<>();
-        photos.forEach(x -> {
-            byte[] data = null;
-            Photo photo = photoRepository.findImageById(x.getId(), Photo.class);
-            if (photo != null) {
-                data = photo.getContent().getData();
-            }
-            photosSend.add(Base64.getEncoder().encodeToString(data));
-        });
-
+        byte[] data = null;
+        Photo photo = photoRepository.findImageById(photos.getId(), Photo.class);
+        if (photo != null) {
+            data = photo.getContent().getData();
+        }
+        photosSend.add(Base64.getEncoder().encodeToString(data));
         return new FileEventResponse(photosSend, new ArrayList<>(), new ArrayList<>());
     }
 
