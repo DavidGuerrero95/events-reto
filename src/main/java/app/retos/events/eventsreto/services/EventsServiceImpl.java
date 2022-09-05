@@ -94,6 +94,14 @@ public class EventsServiceImpl implements IEventsService{
     }
 
     @Override
+    public Boolean existeUsuario(String username) {
+        Boolean retorno = (Boolean) cbFactory.create("events").run(
+                () -> usersFeignClient.EmailUsernameUsuarioExiste(username),
+                this::errorObtenerUsername);
+        return retorno;
+    }
+
+    @Override
     public boolean crearEventoPoste(Integer postId, List<Double> location, Integer zoneCode) {
         Events events = new Events();
         if(eventRepository.existsByPostId(postId))
