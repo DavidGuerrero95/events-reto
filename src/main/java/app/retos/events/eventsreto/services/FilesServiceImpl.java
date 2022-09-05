@@ -47,7 +47,6 @@ public class FilesServiceImpl implements IFilesService {
                     photo.setSize(i.getSize());
                     String suffix = i.getOriginalFilename().substring(i.getOriginalFilename().lastIndexOf("."));
                     photo.setSuffix(suffix);
-                    photo.setImage(Base64.getEncoder().encodeToString(photo.getContent().getData()));
                     photoRepository.save(photo);
                     flag[0] = true;
                     log.info("Guardo");
@@ -125,21 +124,17 @@ public class FilesServiceImpl implements IFilesService {
     @Override
     public FileEventResponse obtenerArchivos(String id) {
         List<Photo> photos = photoRepository.findByEventId(id);
-        List<Photo> photosSend = new ArrayList<>();
+        List<String> photosSend = new ArrayList<>();
         photos.forEach(x -> {
-            photosSend.add(photoRepository.findImageById(x.getId(), Photo.class));
+            byte[] data = null;
+            Photo photo = photoRepository.findImageById(x.getId(), Photo.class);
+            if(photo != null){
+                data = photo.getContent().getData();
+            }
+            photosSend.add(Base64.getEncoder().encodeToString(data));
         });
-        List<Video> videos = videoRepository.findByEventId(id);
-        List<Video> videoSend = new ArrayList<>();
-        videos.forEach(x -> {
-            videoSend.add(videoRepository.findVideoById(id, Video.class));
-        });
-        List<Audio> audio = audioRepository.findByEventId(id);
-        List<Audio> audioSent = new ArrayList<>();
-        audio.forEach(x -> {
-            audioSent.add(audioRepository.findAudioById(id, Audio.class));
-        });
-        return new FileEventResponse(photosSend, videoSend, audioSent);
+
+        return new FileEventResponse(photosSend, new ArrayList<>(), new ArrayList<>());
     }
 
 }

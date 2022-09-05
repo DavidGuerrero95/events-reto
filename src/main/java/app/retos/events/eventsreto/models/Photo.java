@@ -26,6 +26,5 @@ public class Photo {
     private String contentType; // file type
     private long size; // file size
     private String suffix;
-    private String image;
 
 }

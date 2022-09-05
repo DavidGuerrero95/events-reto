@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -57,18 +58,19 @@ public class FilesController {
     @PostMapping("/anexar/usuarios/{username}")
     @ResponseStatus(code = HttpStatus.CREATED)
     public String agregarArchivosUsuario(@PathVariable("username") String username,
-                                         @RequestParam("imagenes") List<MultipartFile> imagenes,
-                                         @RequestParam("videos") List<MultipartFile> videos,
-                                         @RequestParam("audios") List<MultipartFile> audios) {
-        String id = userEventRepository.findByUserId(eventsService.obtenerIdUsuario(username)).getId();
+                                         @RequestParam("imagenes") List<MultipartFile> imagenes) throws InstantiationException, IllegalAccessException {
+        if (eventsService.existeUsuario(username)) {
+            String id = userEventRepository.findByUserId(eventsService.obtenerIdUsuario(username)).getId();
+            if (!imagenes.isEmpty()){
+                filesService.guardarImagenes(id, imagenes);
+                return "Archivos agregados correctamente";
+            }
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error en anexar la foto del evento");
+        } throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El usuario: " + username + " no existe");
 
-        if (!imagenes.isEmpty())
-            filesService.guardarImagenes(id, imagenes);
-        if (!videos.isEmpty())
-            filesService.guardarVideos(id, videos);
-        if (!audios.isEmpty())
-            filesService.guardarAudios(id, audios);
-        return "Archivos agregados correctamente";
+
+
+
     }
 
     @PostMapping("/anexar/poste/{postId}")

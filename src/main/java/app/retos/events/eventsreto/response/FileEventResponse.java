@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class FileEventResponse {
 
-    private List<Photo> photos;
+    private List<String> photos;
     private List<Video> videos;
     private List<Audio> audios;
 
