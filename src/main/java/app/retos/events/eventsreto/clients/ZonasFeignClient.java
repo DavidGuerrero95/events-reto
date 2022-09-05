@@ -11,6 +11,10 @@ public interface ZonasFeignClient {
 
     @GetMapping("/zonas/events/crear/")
     Integer obtainZonesEvents(@RequestParam("idEvents") String idEvents,
-                             @RequestParam("location") List<Double> location);
+                              @RequestParam("location") List<Double> location);
 
+    @GetMapping("/zonas/events/actualizar/")
+    Integer obtainZonesEventsManyTimes(@RequestParam("idEvents") String idEvents,
+                                       @RequestParam("location") List<Double> location,
+                                       @RequestParam("zoneCode") Integer zoneCode);
 }
