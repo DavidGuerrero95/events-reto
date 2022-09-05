@@ -9,6 +9,7 @@ import app.retos.events.eventsreto.repository.AudioRepository;
 import app.retos.events.eventsreto.repository.EventRepository;
 import app.retos.events.eventsreto.repository.PhotoRepository;
 import app.retos.events.eventsreto.repository.VideoRepository;
+import app.retos.events.eventsreto.requests.ExistUser;
 import app.retos.events.eventsreto.requests.UserEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.Binary;
@@ -94,11 +95,20 @@ public class EventsServiceImpl implements IEventsService{
     }
 
     @Override
-    public Boolean existeUsuario(String username) {
-        Boolean retorno = (Boolean) cbFactory.create("events").run(
-                () -> usersFeignClient.EmailUsernameUsuarioExiste(username),
+    public Boolean existeUsuario(String username) throws InstantiationException, IllegalAccessException {
+        Object o = cbFactory.create("events").run(
+                () -> usersFeignClient.preguntarUsuarioExiste(username),
                 this::errorObtenerUsername);
-        return retorno;
+        Class<ExistUser> existUser = (Class<ExistUser>) o.getClass();
+        try {
+            ExistUser a = existUser.newInstance();
+            return a.getExists();
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override
