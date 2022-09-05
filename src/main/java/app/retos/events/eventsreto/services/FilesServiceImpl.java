@@ -46,6 +46,7 @@ public class FilesServiceImpl implements IFilesService {
                     photo.setSize(i.getSize());
                     String suffix = i.getOriginalFilename().substring(i.getOriginalFilename().lastIndexOf("."));
                     photo.setSuffix(suffix);
+                    photo.setImage(Base64.getEncoder().encodeToString(photo.getContent().getData()));
                     log.info("Guardo");
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -126,12 +127,7 @@ public class FilesServiceImpl implements IFilesService {
         List<Photo> photos = photoRepository.findByEventId(id);
         List<String> photosSend = new ArrayList<>();
         photos.forEach(x -> {
-            byte[] data = null;
-            Photo photo = photoRepository.findImageById(x.getId(), Photo.class);
-            if(photo != null){
-                data = photo.getContent().getData();
-            }
-            photosSend.add(Base64.getEncoder().encodeToString(data));
+            photosSend.add(x.getImage());
         });
 
         return new FileEventResponse(photosSend, new ArrayList<>(), new ArrayList<>());

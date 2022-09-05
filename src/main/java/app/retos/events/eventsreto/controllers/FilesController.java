@@ -62,7 +62,7 @@ public class FilesController {
                                          @RequestPart(value = "imagenes") List<MultipartFile> imagenes) throws Exception {
         if (eventsService.existeUsuario(username)) {
             String id = userEventRepository.findByUserId(eventsService.obtenerIdUsuario(username)).getId();
-            if (!imagenes.isEmpty()) {
+            if (imagenes.size() != 0) {
                 filesService.guardarImagenes(id, imagenes);
                 return "Archivos agregados correctamente";
             }
