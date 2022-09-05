@@ -9,7 +9,6 @@ import app.retos.events.eventsreto.repository.AudioRepository;
 import app.retos.events.eventsreto.repository.EventRepository;
 import app.retos.events.eventsreto.repository.PhotoRepository;
 import app.retos.events.eventsreto.repository.VideoRepository;
-import app.retos.events.eventsreto.requests.ExistUser;
 import app.retos.events.eventsreto.requests.UserEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.Binary;
@@ -99,14 +98,8 @@ public class EventsServiceImpl implements IEventsService{
         Object o = cbFactory.create("events").run(
                 () -> usersFeignClient.preguntarUsuarioExiste(username),
                 this::errorObtenerUsername);
-        Class<ExistUser> existUser = (Class<ExistUser>) o.getClass();
-        try {
-            ExistUser a = existUser.newInstance();
-            return a.getExists();
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-
+        log.info(String.valueOf(o.getClass()));
+        return (Boolean) o;
     }
 
     @Override
