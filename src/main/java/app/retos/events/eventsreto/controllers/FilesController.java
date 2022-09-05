@@ -44,7 +44,7 @@ public class FilesController {
     @Autowired
     VideoRepository videoRepository;
 
-    @GetMapping("/obtener/{username}")
+    @GetMapping("/obtener/{id}")
     @ResponseStatus(code = HttpStatus.OK)
     public FileEventResponse obtenerFiles(@PathVariable("id") String id) {
         return filesService.obtenerArchivos(id);
