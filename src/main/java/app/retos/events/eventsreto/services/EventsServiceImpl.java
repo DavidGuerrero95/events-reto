@@ -50,19 +50,24 @@ public class EventsServiceImpl implements IEventsService {
                 BigDecimal.valueOf(userEvent.getLocation().get(1)).setScale(5, RoundingMode.HALF_UP).doubleValue()));
         String userId = obtenerIdUsuario(username);
         UserEvent events = new UserEvent();
-        if (userEventRepository.existsByUserId(userId))
+        if (userEventRepository.existsByUserId(userId)) {
             events = userEventRepository.findByUserId(userId);
-        else {
+            Integer zoneCode = events.getZoneCode();
+            events.setZoneCode(cbFactory.create("events").run(
+                    () -> zonasFeignClient.obtainZonesEventsManyTimes(userId, location, zoneCode),
+                    this::errorObtenerZona));
+        } else {
             events.setUserId(userId);
             events.setType(1);
             events.setStatus(1);
+            events.setZoneCode(cbFactory.create("events").run(
+                    () -> zonasFeignClient.obtainZonesEvents(userId, location),
+                    this::errorObtenerZona));
         }
         events.setDate(new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()));
         events.setTime(new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()));
         events.setLocation(location);
-        events.setZoneCode(cbFactory.create("events").run(
-                () -> zonasFeignClient.obtainZonesEvents(userId, location),
-                this::errorObtenerZona));
+
         if (userEvent.getComment() != null)
             events.setComment(userEvent.getComment());
         if (userEvent.getEventDescription() != null)
