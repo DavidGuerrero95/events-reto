@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class UserEvent {
+public class UserEventRequest {
 
     @NotEmpty(message = "ubicacion no puedde esta vacia")
     @Size(min=2,max = 2, message = "Debe tener dos valores (Lat, Lon)")

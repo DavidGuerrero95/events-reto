@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface VideoRepository extends MongoRepository<Video, String> {
     
-    List<Video> findByEventId(String id);
+    List<Video> findByEventId(String id, Class<Video> class1);
 
     void deleteByEventId(String id);
     

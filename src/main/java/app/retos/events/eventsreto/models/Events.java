@@ -20,8 +20,6 @@ public class Events {
     @JsonIgnore
     private String id;
 
-    private String userId;
-    private Integer postId;
     private Integer type;
     private String date;
     private String time;
@@ -34,9 +32,6 @@ public class Events {
     private Integer status;
     private String comment;
     private Integer zoneCode;
-    private List<Photo> photos;
-    private List<Video> videos;
-    private List<Audio> audios;
 
     @JsonIgnore
     private String historicalId;

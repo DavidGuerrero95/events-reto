@@ -6,8 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 public interface AudioRepository extends MongoRepository<Audio, String> {
-
-    List<Audio> findByEventId(String id);
+    List<Audio> findByEventId(String id, Class<Audio> class1);
 
     void deleteByEventId(String id);
 }

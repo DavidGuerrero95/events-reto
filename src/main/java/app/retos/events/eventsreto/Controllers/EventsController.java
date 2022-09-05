@@ -1,10 +1,9 @@
 package app.retos.events.eventsreto.Controllers;
 
 import app.retos.events.eventsreto.clients.SensoresFeignClient;
-import app.retos.events.eventsreto.clients.UsersFeignClient;
 import app.retos.events.eventsreto.models.Events;
 import app.retos.events.eventsreto.repository.EventRepository;
-import app.retos.events.eventsreto.requests.UserEvent;
+import app.retos.events.eventsreto.requests.UserEventRequest;
 import app.retos.events.eventsreto.services.IEventsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -21,20 +19,16 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/eventos")
 public class EventsController {
+
+    @Autowired
+    EventRepository eventRepository;
+    @Autowired
+    IEventsService eventsService;
+    @Autowired
+    SensoresFeignClient sensoresFeignClient;
     @SuppressWarnings("rawtypes")
     @Autowired
     private CircuitBreakerFactory cbFactory;
-    @Autowired
-    EventRepository eventRepository;
-
-    @Autowired
-    IEventsService eventsService;
-
-    @Autowired
-    UsersFeignClient usersFeignClient;
-
-    @Autowired
-    SensoresFeignClient sensoresFeignClient;
 
     @GetMapping("/listar")
     @ResponseStatus(code = HttpStatus.OK)
@@ -70,8 +64,8 @@ public class EventsController {
     @PostMapping("/crear/usuario/{username}")
     @ResponseStatus(code = HttpStatus.CREATED)
     public String crearEventoUser(@PathVariable("username") String username,
-                                  @RequestBody @Validated UserEvent userEvent) throws InstantiationException, IllegalAccessException {
-        if (eventsService.existeUsuario(username)){
+                                  @RequestBody @Validated UserEventRequest userEvent) throws InstantiationException, IllegalAccessException {
+        if (eventsService.existeUsuario(username)) {
             if (eventsService.crearEventoUsuario(username, userEvent)) return "Evento creado correctamente";
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error en la creación del evento");
         }
@@ -92,38 +86,19 @@ public class EventsController {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El poste: " + postId + " no existe");
     }
 
-    @PostMapping("/anexar/usuarios/{username}")
-    @ResponseStatus(code = HttpStatus.CREATED)
-    public String agregarArchivosUsuario(@PathVariable("username") String username,
-                                  @RequestParam("imagenes") List<MultipartFile> imagenes,
-                                  @RequestParam("videos") List<MultipartFile> videos,
-                                  @RequestParam("audios") List<MultipartFile> audios) {
-        String id = eventRepository.findByUserId(eventsService.obtenerIdUsuario(username)).getId();
 
-        if (imagenes != null)
-            eventsService.guardarImagenes(id, imagenes);
-        if (imagenes != null)
-            eventsService.guardarVideos(id, videos);
-        if (imagenes != null)
-            eventsService.guardarAudios(id, audios);
-        return "Archivos agregados correctamente";
+    @DeleteMapping("/eliminar/usuario/{username}")
+    @ResponseStatus(HttpStatus.OK)
+    public void eliminarEventoUsuario(@PathVariable("username") String username) {
+        eventsService.deleteAll();
+        String id = eventRepository.findByUserId(eventsService.obtenerIdUsuario(username)).getId();
+        eventsService.deleteUser(id);
     }
 
-    @PostMapping("/anexar/poste/{postId}")
-    @ResponseStatus(code = HttpStatus.CREATED)
-    public String agregarArchivosPoste(@PathVariable("postId") Integer postId,
-                                  @RequestParam("imagenes") List<MultipartFile> imagenes,
-                                  @RequestParam("videos") List<MultipartFile> videos,
-                                  @RequestParam("audios") List<MultipartFile> audios) {
-        String id = eventRepository.findByPostId(postId).getId();
-
-        if (imagenes != null)
-            eventsService.guardarImagenes(id, imagenes);
-        if (imagenes != null)
-            eventsService.guardarVideos(id, videos);
-        if (imagenes != null)
-            eventsService.guardarAudios(id, audios);
-        return "Archivos agregados correctamente";
+    @DeleteMapping("/eliminar/all")
+    @ResponseStatus(HttpStatus.OK)
+    public void eliminarALl() {
+        eventsService.deleteAll();
     }
 
 
