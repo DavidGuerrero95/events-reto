@@ -1,5 +1,6 @@
 package app.retos.events.eventsreto.services;
 
+import app.retos.events.eventsreto.clients.HistoricalFeignClient;
 import app.retos.events.eventsreto.clients.UsersFeignClient;
 import app.retos.events.eventsreto.clients.ZonasFeignClient;
 import app.retos.events.eventsreto.models.PostEvent;
@@ -39,6 +40,9 @@ public class EventsServiceImpl implements IEventsService {
     VideoRepository videoRepository;
     @Autowired
     AudioRepository audioRepository;
+
+    @Autowired
+    HistoricalFeignClient historicalFeignClient;
     @SuppressWarnings("rawtypes")
     @Autowired
     private CircuitBreakerFactory cbFactory;
@@ -73,6 +77,12 @@ public class EventsServiceImpl implements IEventsService {
         if (userEvent.getEventDescription() != null)
             events.setEventDescription(userEvent.getEventDescription());
         try {
+            UserEvent finalEvents = events;
+            events.setHistoricalId(cbFactory.create("events").run(
+                    () -> historicalFeignClient.crearHistorico(finalEvents.getUserId(), finalEvents.getType(), finalEvents.getDate(),
+                            finalEvents.getTime(), finalEvents.getEventDescription(), finalEvents.getLocation(),
+                            finalEvents.getStatus(), finalEvents.getComment(), finalEvents.getZoneCode()),
+                    this::errorObtenerHistorical));
             userEventRepository.save(events);
             audioRepository.deleteByEventId(events.getId());
             videoRepository.deleteByEventId(events.getId());
@@ -154,6 +164,11 @@ public class EventsServiceImpl implements IEventsService {
     private <T> T errorExisteUsername(Throwable e) {
         log.info("Error existe user: " + e.getMessage());
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Servicio usuarios no esta disponible");
+    }
+
+    private String errorObtenerHistorical(Throwable e) {
+        log.info("Error al crear historico: " + e.getMessage());
+        return "-1";
     }
 
 }

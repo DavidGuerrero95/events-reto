@@ -1,18 +1,25 @@
 package app.retos.events.eventsreto.services;
 
+import app.retos.events.eventsreto.clients.HistoricalFeignClient;
 import app.retos.events.eventsreto.models.Audio;
+import app.retos.events.eventsreto.models.Events;
 import app.retos.events.eventsreto.models.Photo;
 import app.retos.events.eventsreto.models.Video;
 import app.retos.events.eventsreto.repository.AudioRepository;
 import app.retos.events.eventsreto.repository.PhotoRepository;
+import app.retos.events.eventsreto.repository.UserEventRepository;
 import app.retos.events.eventsreto.repository.VideoRepository;
 import app.retos.events.eventsreto.response.FileEventResponse;
 import com.mongodb.MongoException;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.Binary;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
+import org.w3c.dom.events.Event;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +33,8 @@ import java.util.List;
 public class FilesServiceImpl implements IFilesService {
 
     @Autowired
+    private CircuitBreakerFactory cbFactory;
+    @Autowired
     PhotoRepository photoRepository;
 
     @Autowired
@@ -33,6 +42,9 @@ public class FilesServiceImpl implements IFilesService {
 
     @Autowired
     AudioRepository audioRepository;
+
+    @Autowired
+    HistoricalFeignClient historicalFeignClient;
 
     @Override
     public boolean guardarImagenes(String id, List<MultipartFile> imagenes) {
@@ -142,4 +154,26 @@ public class FilesServiceImpl implements IFilesService {
 
         return new FileEventResponse(photosSend, videosSend, audiosSend);
     }
+
+    @Override
+    public boolean sendFiles(Events events) {
+        String id = events.getId();
+        FileEventResponse fileEventResponse = obtenerArchivos(id);
+        String historicalId = events.getHistoricalId();
+        if(!historicalId.equals("-1")) {
+            return (cbFactory.create("events").run(
+                    () -> historicalFeignClient.guardarFiles(historicalId,fileEventResponse),
+                    this::errorObtenerHistorical));
+        }
+        return false;
+    }
+
+    //  ****************************	FUNCIONES TOLERANCIA A FALLOS	***********************************  //
+
+    private boolean errorObtenerHistorical(Throwable e) {
+        log.info("Error al crear historico: " + e.getMessage());
+        return false;
+    }
+
+
 }
