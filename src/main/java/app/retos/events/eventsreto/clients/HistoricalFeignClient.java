@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(name = "sensores-reto")
+@FeignClient(name = "historical-retos")
 public interface HistoricalFeignClient {
 
 
