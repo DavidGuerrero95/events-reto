@@ -1,5 +1,6 @@
 package app.retos.events.eventsreto.services;
 
+import app.retos.events.eventsreto.models.Events;
 import app.retos.events.eventsreto.response.FileEventResponse;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,4 +16,6 @@ public interface IFilesService {
     boolean guardarAudios(String id, List<MultipartFile> audios);
 
     FileEventResponse obtenerArchivos(String id);
+
+    boolean sendFiles(Events events);
 }

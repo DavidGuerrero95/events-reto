@@ -94,7 +94,6 @@ public class EventsController {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El poste: " + postId + " no existe");
     }
 
-
     @DeleteMapping("/eliminar/usuario/{username}")
     @ResponseStatus(HttpStatus.OK)
     public void eliminarEventoUsuario(@PathVariable("username") String username) {

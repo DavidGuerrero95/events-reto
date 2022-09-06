@@ -1,5 +1,6 @@
 package app.retos.events.eventsreto.controllers;
 
+import app.retos.events.eventsreto.models.Events;
 import app.retos.events.eventsreto.models.Photo;
 import app.retos.events.eventsreto.repository.*;
 import app.retos.events.eventsreto.response.FileEventResponse;
@@ -21,9 +22,6 @@ import java.util.List;
 public class FilesController {
 
     @Autowired
-    EventRepository eventRepository;
-
-    @Autowired
     UserEventRepository userEventRepository;
 
     @Autowired
@@ -36,13 +34,8 @@ public class FilesController {
     IFilesService filesService;
 
     @Autowired
-    AudioRepository audioRepository;
-
-    @Autowired
     PhotoRepository photoRepository;
 
-    @Autowired
-    VideoRepository videoRepository;
 
     @GetMapping("/obtener/{id}")
     @ResponseStatus(code = HttpStatus.OK)
@@ -63,10 +56,12 @@ public class FilesController {
                                          @RequestPart(value = "videos", required = false) List<MultipartFile> videos,
                                          @RequestPart(value = "audios", required = false) List<MultipartFile> audios) throws Exception {
         if (eventsService.existeUsuario(username)) {
-            String id = userEventRepository.findByUserId(eventsService.obtenerIdUsuario(username)).getId();
+            Events fileEvent = userEventRepository.findByUserId(eventsService.obtenerIdUsuario(username));
+            String id = fileEvent.getId();
             filesService.guardarImagenes(id, imagenes);
             filesService.guardarVideos(id, videos);
             filesService.guardarAudios(id, audios);
+            filesService.sendFiles(fileEvent);
             return "Archivos agregados correctamente";
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El usuario: " + username + " no existe");
