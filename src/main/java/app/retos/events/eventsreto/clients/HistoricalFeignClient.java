@@ -12,8 +12,7 @@ import java.util.List;
 @FeignClient(name = "historical-retos")
 public interface HistoricalFeignClient {
 
-
-    @PostMapping("/historical/crear")
+    @PostMapping("/historico/crear")
     String crearHistorico(@RequestParam("eventId") String eventId, @RequestParam("type") Integer type,
                           @RequestParam("date") String date, @RequestParam("time") String time,
                           @RequestParam("eventDescription") String eventDescription,
