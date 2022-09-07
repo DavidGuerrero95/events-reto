@@ -2,10 +2,7 @@ package app.retos.events.eventsreto.clients;
 
 import app.retos.events.eventsreto.response.FileEventResponse;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,5 +17,5 @@ public interface HistoricalFeignClient {
                           @RequestParam("comment") String comment, @RequestParam("zoneCode") Integer zoneCode);
 
     @PutMapping("/historico/files/{historicalId}")
-    public Boolean guardarFiles(@PathVariable("historicalId") String historicalId, FileEventResponse fileEventResponse);
+    public Boolean guardarFiles(@PathVariable("historicalId") String historicalId, @RequestBody FileEventResponse fileEventResponse);
 }
