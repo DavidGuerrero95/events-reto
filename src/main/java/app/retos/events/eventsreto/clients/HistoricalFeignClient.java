@@ -19,6 +19,6 @@ public interface HistoricalFeignClient {
                           @RequestParam("location") List<Double> location, @RequestParam("status") Integer status,
                           @RequestParam("comment") String comment, @RequestParam("zoneCode") Integer zoneCode);
 
-    @PutMapping("/historical/files/{historicalId}")
+    @PutMapping("/historico/files/{historicalId}")
     public Boolean guardarFiles(@PathVariable("historicalId") String historicalId, FileEventResponse fileEventResponse);
 }
