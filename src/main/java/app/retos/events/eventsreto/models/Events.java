@@ -16,7 +16,6 @@ import java.util.List;
 public class Events {
 
     @Id
-    @JsonIgnore
     private String id;
 
     private Integer type;
