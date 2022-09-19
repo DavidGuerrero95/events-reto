@@ -80,9 +80,9 @@ public class EventsController {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El usuario: " + username + " no existe");
     }
 
-    @PutMapping("/crear/poste/{postId}")
+    @PutMapping("/crear/poste/")
     @ResponseStatus(code = HttpStatus.CREATED)
-    public String crearEventoPoste(@PathVariable("postId") Integer postId,
+    public String crearEventoPoste(@RequestParam(value = "postId", required = true) Integer postId,
                                    @RequestParam(value = "location", required = true) List<Double> location,
                                    @RequestParam(value = "zoneCode", required = true) Integer zoneCode) {
         if (cbFactory.create("events").run(
