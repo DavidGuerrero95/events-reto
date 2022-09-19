@@ -74,7 +74,10 @@ public class EventsController {
     public String crearEventoUser(@PathVariable("username") String username,
                                   @RequestBody @Validated UserEventRequest userEvent) throws InstantiationException, IllegalAccessException {
         if (eventsService.existeUsuario(username)) {
-            if (eventsService.crearEventoUsuario(username, userEvent)) return "Evento creado correctamente";
+            if (eventsService.crearEventoUsuario(username, userEvent)) {
+                log.info("Evento creado: "+username);
+                return "Evento creado correctamente";
+            }
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error en la creación del evento");
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El usuario: " + username + " no existe");
