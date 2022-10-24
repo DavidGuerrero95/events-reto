@@ -9,7 +9,6 @@ import java.util.List;
 
 public interface EventRepository extends MongoRepository<Events, String> {
 
-
     @RestResource(path = "find-zoneCode")
     List<Events> findByZoneCode(@Param("zoneCode") Integer zoneCode);
 
