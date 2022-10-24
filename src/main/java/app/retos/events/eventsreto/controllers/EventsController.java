@@ -70,7 +70,7 @@ public class EventsController {
     @GetMapping("/listar/zona/{zoneCode}")
     @ResponseStatus(code = HttpStatus.OK)
     public List<Events> listarEventosZona(@PathVariable("zoneCode") Integer zoneCode) {
-        return eventRepository.findByZoneCode(zoneCode);
+        return eventRepository.findByZone(zoneCode);
     }
 
     @GetMapping("/listar/status/{status}")
