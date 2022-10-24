@@ -58,15 +58,15 @@ public class EventsServiceImpl implements IEventsService {
         UserEvent events = new UserEvent();
         if (userEventRepository.existsByUserId(userId)) {
             events = userEventRepository.findByUserId(userId);
-            Integer zoneCode = events.getZoneCode();
-            events.setZoneCode(cbFactory.create("events").run(
+            Integer zoneCode = events.getZone();
+            events.setZone(cbFactory.create("events").run(
                     () -> zonasFeignClient.obtainZonesEventsManyTimes(userId, location, zoneCode),
                     this::errorObtenerZona));
         } else {
             events.setUserId(userId);
-            events.setType(1);
+            events.setEventOrigin(1);
             events.setStatus(1);
-            events.setZoneCode(cbFactory.create("events").run(
+            events.setZone(cbFactory.create("events").run(
                     () -> zonasFeignClient.obtainZonesEvents(userId, location),
                     this::errorObtenerZona));
         }
@@ -76,14 +76,12 @@ public class EventsServiceImpl implements IEventsService {
 
         if (userEvent.getComment() != null)
             events.setComment(userEvent.getComment());
-        if (userEvent.getEventDescription() != null)
-            events.setEventDescription(userEvent.getEventDescription());
         try {
             UserEvent finalEvents = events;
             events.setHistoricalId(cbFactory.create("events").run(
-                    () -> historicalFeignClient.crearHistorico(finalEvents.getUserId(), finalEvents.getType(), finalEvents.getDate(),
-                            finalEvents.getTime(), finalEvents.getEventDescription(), finalEvents.getLocation(),
-                            finalEvents.getStatus(), finalEvents.getComment(), finalEvents.getZoneCode()),
+                    () -> historicalFeignClient.crearHistorico(finalEvents.getUserId(), finalEvents.getEventOrigin(), finalEvents.getDate(),
+                            finalEvents.getTime(), finalEvents.getTypeEmergency(), finalEvents.getLocation(),
+                            finalEvents.getStatus(), finalEvents.getComment(), finalEvents.getZone()),
                     this::errorObtenerHistorical));
             userEventRepository.save(events);
             audioRepository.deleteByEventId(events.getId());
@@ -117,9 +115,9 @@ public class EventsServiceImpl implements IEventsService {
             events = postEventRepository.findByPostId(postId);
         else {
             events.setPostId(postId);
-            events.setType(1);
+            events.setEventOrigin(1);
             events.setStatus(1);
-            events.setZoneCode(zoneCode);
+            events.setZone(zoneCode);
         }
         events.setDate(new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()));
         events.setTime(new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()));

@@ -12,7 +12,7 @@ public interface HistoricalFeignClient {
     @PostMapping("/historico/crear")
     String crearHistorico(@RequestParam("eventId") String eventId, @RequestParam("type") Integer type,
                           @RequestParam("date") String date, @RequestParam("time") String time,
-                          @RequestParam("eventDescription") String eventDescription,
+                          @RequestParam("typeEmergency") Integer typeEmergency,
                           @RequestParam("location") List<Double> location, @RequestParam("status") Integer status,
                           @RequestParam("comment") String comment, @RequestParam("zoneCode") Integer zoneCode);
 
