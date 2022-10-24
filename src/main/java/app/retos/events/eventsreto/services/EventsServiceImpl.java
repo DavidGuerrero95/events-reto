@@ -27,6 +27,8 @@ import java.util.List;
 public class EventsServiceImpl implements IEventsService {
 
     @Autowired
+    EventRepository eventRepository;
+    @Autowired
     UserEventRepository userEventRepository;
     @Autowired
     PostEventRepository postEventRepository;
@@ -136,10 +138,12 @@ public class EventsServiceImpl implements IEventsService {
 
     @Override
     public void deleteAll() {
+        eventRepository.deleteAll();
         userEventRepository.deleteAll();
+        postEventRepository.deleteAll();
+        audioRepository.deleteAll();
         photoRepository.deleteAll();
         videoRepository.deleteAll();
-        audioRepository.deleteAll();
     }
 
     @Override

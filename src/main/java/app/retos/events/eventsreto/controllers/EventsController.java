@@ -30,6 +30,7 @@ public class EventsController {
 
     @Autowired
     PostEventRepository postEventRepository;
+
     @Autowired
     IEventsService eventsService;
     @Autowired
@@ -37,6 +38,15 @@ public class EventsController {
     @SuppressWarnings("rawtypes")
     @Autowired
     private CircuitBreakerFactory cbFactory;
+
+
+    @DeleteMapping("/eliminar-todo")
+    public void deleteAll() {
+        eventRepository.deleteAll();
+        userEventRepository.deleteAll();
+        postEventRepository.deleteAll();
+
+    }
 
     @GetMapping("/listar")
     @ResponseStatus(code = HttpStatus.OK)
@@ -75,7 +85,7 @@ public class EventsController {
                                   @RequestBody @Validated UserEventRequest userEvent) throws InstantiationException, IllegalAccessException {
         if (eventsService.existeUsuario(username)) {
             if (eventsService.crearEventoUsuario(username, userEvent)) {
-                log.info("Evento creado: "+username);
+                log.info("Evento creado: " + username);
                 return "Evento creado correctamente";
             }
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error en la creación del evento");
