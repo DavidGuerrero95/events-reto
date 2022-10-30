@@ -26,7 +26,7 @@ public class Events {
     private String date;
     private String time;
 
-    @NotEmpty(message = "locacion no puedde esta vacia")
+    @NotEmpty(message = "locacion no puede esta vacia")
     @Size(min = 2, max = 2, message = "Debe tener dos valores")
     private List<Double> location;
 
