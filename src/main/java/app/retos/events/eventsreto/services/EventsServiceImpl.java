@@ -71,8 +71,7 @@ public class EventsServiceImpl implements IEventsService {
                     () -> zonasFeignClient.obtainZonesEvents(userId, location),
                     this::errorObtenerZona));
         }
-        if (userEvent.getTypeEmergency() == null) events.setTypeEmergency(1);
-        else events.setTypeEmergency(userEvent.getTypeEmergency());
+        events.setTypeEmergency(userEvent.getTypeEmergency());
         events.setDate(new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()));
         events.setTime(new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()));
         events.setLocation(location);
