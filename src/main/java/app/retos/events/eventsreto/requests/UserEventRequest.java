@@ -3,10 +3,7 @@ package app.retos.events.eventsreto.requests;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.util.List;
 
 @Data
@@ -19,6 +16,7 @@ public class UserEventRequest {
 
     @Min(1)
     @Max(10)
+    @NotNull(message = "no puede estar vacio")
     private Integer typeEmergency;
 
     private String comment;
