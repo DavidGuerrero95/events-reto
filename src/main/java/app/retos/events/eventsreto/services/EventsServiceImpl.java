@@ -56,6 +56,7 @@ public class EventsServiceImpl implements IEventsService {
                 BigDecimal.valueOf(userEvent.getLocation().get(1)).setScale(5, RoundingMode.HALF_UP).doubleValue()));
         String userId = obtenerIdUsuario(username);
         UserEvent events = new UserEvent();
+
         if (userEventRepository.existsByUserId(userId)) {
             events = userEventRepository.findByUserId(userId);
             Integer zoneCode = events.getZone();
@@ -70,6 +71,8 @@ public class EventsServiceImpl implements IEventsService {
                     () -> zonasFeignClient.obtainZonesEvents(userId, location),
                     this::errorObtenerZona));
         }
+        if (userEvent.getTypeEmergency() == null) events.setTypeEmergency(1);
+        else events.setTypeEmergency(userEvent.getTypeEmergency());
         events.setDate(new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()));
         events.setTime(new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()));
         events.setLocation(location);

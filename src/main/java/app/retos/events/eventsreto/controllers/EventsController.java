@@ -39,15 +39,6 @@ public class EventsController {
     @Autowired
     private CircuitBreakerFactory cbFactory;
 
-
-    @DeleteMapping("/eliminar-todo")
-    public void deleteAll() {
-        eventRepository.deleteAll();
-        userEventRepository.deleteAll();
-        postEventRepository.deleteAll();
-
-    }
-
     @GetMapping("/listar")
     @ResponseStatus(code = HttpStatus.OK)
     public List<Events> listarEventos() {
