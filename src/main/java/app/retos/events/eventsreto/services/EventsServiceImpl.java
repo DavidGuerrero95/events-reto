@@ -1,8 +1,10 @@
 package app.retos.events.eventsreto.services;
 
 import app.retos.events.eventsreto.clients.HistoricalFeignClient;
+import app.retos.events.eventsreto.clients.NotificationsFeignClient;
 import app.retos.events.eventsreto.clients.UsersFeignClient;
 import app.retos.events.eventsreto.clients.ZonasFeignClient;
+import app.retos.events.eventsreto.requests.Contacts;
 import app.retos.events.eventsreto.models.PostEvent;
 import app.retos.events.eventsreto.models.UserEvent;
 import app.retos.events.eventsreto.repository.*;
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -45,6 +48,10 @@ public class EventsServiceImpl implements IEventsService {
 
     @Autowired
     HistoricalFeignClient historicalFeignClient;
+
+    @Autowired
+    NotificationsFeignClient notificationsFeignClient;
+
     @SuppressWarnings("rawtypes")
     @Autowired
     private CircuitBreakerFactory cbFactory;
@@ -55,6 +62,8 @@ public class EventsServiceImpl implements IEventsService {
                 BigDecimal.valueOf(userEvent.getLocation().get(0)).setScale(5, RoundingMode.HALF_UP).doubleValue(),
                 BigDecimal.valueOf(userEvent.getLocation().get(1)).setScale(5, RoundingMode.HALF_UP).doubleValue()));
         String userId = obtenerIdUsuario(username);
+        List<Contacts> contactsList = obtenerContactos(username);
+        List<String> emailList = contactsList.stream().map(Contacts::getEmail).collect(Collectors.toList());
         UserEvent events = new UserEvent();
 
         if (userEventRepository.existsByUserId(userId)) {
@@ -86,6 +95,7 @@ public class EventsServiceImpl implements IEventsService {
                             finalEvents.getStatus(), finalEvents.getComment(), finalEvents.getZone()),
                     this::errorObtenerHistorical));
             userEventRepository.save(events);
+            notificationsFeignClient.enviarMensajeAlerta(emailList,username,events.getTypeEmergency());
             audioRepository.deleteByEventId(events.getId());
             videoRepository.deleteByEventId(events.getId());
             photoRepository.deleteByEventId(events.getId());
@@ -154,8 +164,19 @@ public class EventsServiceImpl implements IEventsService {
         photoRepository.deleteByEventId(id);
     }
 
+    private List<Contacts> obtenerContactos(String username) {
+        return cbFactory.create("events").run(
+                () -> usersFeignClient.listarContactos(username),
+                this::errorObtenerContactos);
+    }
+
     //  ****************************	FUNCIONES TOLERANCIA A FALLOS	***********************************  //
     private String errorObtenerUsername(Throwable e) {
+        log.info("Error obtener username: " + e.getMessage());
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Servicio usuarios no esta disponible");
+    }
+
+    private List<Contacts> errorObtenerContactos(Throwable e) {
         log.info("Error obtener username: " + e.getMessage());
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Servicio usuarios no esta disponible");
     }
